@@ -19,12 +19,16 @@ package com.example.android.lifecycles.step5;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 import com.example.android.codelabs.lifecycle.R;
+import com.example.android.lifecycles.step2.ChronometerViewModel;
 
 /**
  * Shows a SeekBar that should be synced with a value in a ViewModel.
@@ -43,6 +47,10 @@ public class Fragment_step5 extends Fragment {
         mSeekBar = root.findViewById(R.id.seekBar);
 
         // TODO: get ViewModel
+
+        mSeekBarViewModel= new ViewModelProvider(this).get(SeekBarViewModel.class);
+
+
         subscribeSeekBar();
 
         return root;
@@ -56,6 +64,7 @@ public class Fragment_step5 extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 // TODO: Set the ViewModel's value when the change comes from the user.
+                mSeekBarViewModel.seekbarValue.setValue(progress);
             }
 
             @Override
@@ -66,6 +75,14 @@ public class Fragment_step5 extends Fragment {
         });
 
         // TODO: Update the SeekBar when the ViewModel is changed.
-        // mSeekBarViewModel.seekbarValue.observe(...
+        mSeekBarViewModel.seekbarValue.observe(requireActivity(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (integer!=null){
+                    mSeekBar.setProgress(integer);
+                }
+
+            }
+        });
     }
 }
